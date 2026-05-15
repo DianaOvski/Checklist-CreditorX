@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CreditorX — Carrier Testing Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --surface: #151820;
+    --surface2: #1c2030;
+    --border: #2a2f3f;
+    --accent: #3b82f6;
+    --accent-dim: rgba(59,130,246,0.12);
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.1);
+    --yellow: #eab308;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .logo span { color: var(--muted); }
+  .header-progress {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .header-progress strong { color: var(--text); }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 61px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 61px;
+    height: calc(100vh - 61px);
+    overflow-y: auto;
+  }
+  .sidebar-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0 20px 12px;
+  }
+  .carrier-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 9px 20px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .carrier-btn:hover { color: var(--text); background: var(--surface); }
+  .carrier-btn.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-left-color: var(--accent);
+    font-weight: 500;
+  }
+  .carrier-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--surface2);
+    color: var(--muted);
+  }
+  .carrier-btn.done .carrier-badge {
+    background: var(--green-dim);
+    color: var(--green);
+  }
+
+  /* MAIN */
+  main { padding: 32px 40px; max-width: 760px; }
+
+  /* TESTER INPUT */
+  .tester-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .tester-row label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .tester-row input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+  }
+  .tester-row input::placeholder { color: var(--muted); }
+
+  /* CARRIER HEADER */
+  .carrier-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .carrier-title {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .carrier-meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* PROGRESS */
+  .progress-wrap {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 99px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 3px;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+  }
+
+  /* SECTIONS */
+  .section { margin-bottom: 28px; }
+  .section-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* CHECK ITEMS */
+  .check-item {
+    padding: 10px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.1s;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 2px;
+  }
+  .check-item:hover { background: var(--surface); }
+  .check-item input[type=checkbox] {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .check-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    flex: 1;
+    user-select: none;
+  }
+  .check-text.done {
+    color: var(--muted);
+    text-decoration: line-through;
+  }
+  .note-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 12px;
+    margin: 2px 0 6px 37px;
+    outline: none;
+    transition: border-color 0.15s, color 0.15s;
+    display: block;
+    width: calc(100% - 37px);
+  }
+  .note-input:focus { border-color: var(--accent); color: var(--text); }
+  .note-input::placeholder { color: var(--border); }
+
+  /* ACTIONS */
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    padding: 9px 18px;
+    border-radius: 5px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+  }
+  .btn:hover { color: var(--text); border-color: var(--muted); }
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn.primary:hover { opacity: 0.85; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.25s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success { background: var(--green-dim); border: 1px solid var(--green); color: var(--green); }
+  .toast.error { background: rgba(239,68,68,0.1); border: 1px solid var(--red); color: var(--red); }
+  .toast.info { background: var(--accent-dim); border: 1px solid var(--accent); color: var(--accent); }
+
+  /* MOBILE */
+  @media (max-width: 640px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: relative; top: 0; height: auto; border-right: none; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; padding: 12px; gap: 4px; }
+    .sidebar-label { width: 100%; }
+    .carrier-btn { width: auto; border-left: none; border-radius: 4px; border: 1px solid var(--border); padding: 6px 12px; }
+    .carrier-btn.active { border-color: var(--accent); }
+    main { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">CreditorX <span>/</span> Carrier Testing</div>
+  <div class="header-progress" id="globalProgress">0 / 0 completed</div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-label">Carriers</div>
+    <div id="carrierList"></div>
+  </aside>
+
+  <main>
+    <div class="tester-row">
+      <label>Tester</label>
+      <input type="text" id="testerName" placeholder="Enter your name..." />
+    </div>
+
+    <div class="carrier-header">
+      <div class="carrier-title" id="carrierTitle">AT&T</div>
+      <div class="carrier-meta" id="carrierMeta">0 / 0</div>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+    <div id="checklistBody"></div>
+
+    <div class="actions">
+      <button class="btn" onclick="resetCurrent()">Reset carrier</button>
+      <button class="btn primary" id="submitBtn" onclick="submitResults()">Submit to Google Sheets</button>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbww4BAjN_5LmC5I9VafDEQyD8UuhbOvq3gKAOOVyuB0gCVjDeipeL7ptmu48iE2fA/exec";
+
+
+const carriers = [
+  "AT&T","Boost Mobile","Consumer Cellular","Cricket Wireless",
+  "Metro by T-Mobile","Mint Mobile","Spectrum Mobile","Sprint",
+  "T-Mobile","TracFone","Verizon","Visible","Xfinity Mobile"
+];
+
+const sections = [
+  {
+    title: "1. Initial setup",
+    items: [
+      { id:"c1", text:"Carrier appears correctly in the list of available operators" },
+      { id:"c2", text:"USSD codes generated are correct for this carrier" },
+      { id:"c3", text:"Executing the USSD code on the dialer, the carrier confirms call forwarding is active" },
+      { id:"c4", text:"App reflects 'forwarding active' status after setup" },
+    ]
+  },  
+  {
+    title: "2. Call forwarding — debt collection numbers",
+    items: [
+      { id:"d1", text:"A call from a registered and verified number is redirected to the call center" },
+      { id:"d2", text:"The call center receives the call correctly (no drops or audio issues)" },
+      { id:"d3", text:"App logs the forwarding event with timestamp and origin number" },
+      { id:"d4", text:"Forwarding works when the phone is busy (call in progress)" },
+      { id:"d5", text:"Forwarding works when the phone is off or has no signal" },
+    ]
+  },
+  {
+    title: "3. No forwarding — normal calls",
+    items: [
+      { id:"n1", text:"A call from an unregistered number reaches the user directly (no forwarding)" },
+      { id:"n2", text:"Calls from contacts in the phonebook are not forwarded" },
+      { id:"n3", text:"Unknown numbers (not in the debt collection list) are not forwarded" },
+      { id:"n4", text:"App does not generate forwarding events for normal calls" },
+    ]
+  },
+  {
+    title: "4. Voicemail storage",
+    items: [
+      { id:"v1", text:"If a debt collection number leaves a voicemail, it is stored in the app" },
+      { id:"v2", text:"Voicemail is playable from the app without errors" },
+      { id:"v3", text:"Origin number and duration are shown for each voicemail" },
+      { id:"v4", text:"Multiple voicemails from the same number are stored correctly" },
+    ]
+  },
+  {
+    title: "5. Carrier-side validation",
+    items: [
+      { id:"o1", text:"Confirmed with carrier (support or portal) that conditional forwarding is active" },
+      { id:"o2", text:"USSD deactivation code cancels forwarding correctly" },
+      { id:"o3", text:"Carrier does not charge unexpected extra minutes for forwarded calls" },
+      { id:"o4", text:"Re-activating forwarding after deactivation works without issues" },
+    ]
+  }
+];
+
+let currentCarrier = carriers[0];
+let state = {};
+carriers.forEach(c => {
+  state[c] = {};
+  sections.forEach(s => s.items.forEach(i => {
+    state[c][i.id] = { checked: false, note: "" };
+  }));
+});
+
+function getTotals(carrier) {
+  const all = Object.values(state[carrier]);
+  return { done: all.filter(x => x.checked).length, total: all.length };
+}
+
+function getTotalAll() {
+  let done = 0, total = 0;
+  carriers.forEach(c => { const t = getTotals(c); done += t.done; total += t.total; });
+  return { done, total };
+}
+
+function renderSidebar() {
+  const list = document.getElementById("carrierList");
+  list.innerHTML = carriers.map(c => {
+    const t = getTotals(c);
+    const done = t.done === t.total;
+    return `<button class="carrier-btn ${c===currentCarrier?'active':''} ${done?'done':''}" onclick="setCarrier('${c.replace(/'/g,"\\'")}')">
+      ${c}
+      <span class="carrier-badge">${t.done}/${t.total}</span>
+    </button>`;
+  }).join("");
+}
+
+function renderChecklist() {
+  const body = document.getElementById("checklistBody");
+  body.innerHTML = sections.map(sec => `
+    <div class="section">
+      <div class="section-title">${sec.title}</div>
+      ${sec.items.map(item => {
+        const s = state[currentCarrier][item.id];
+        return `
+          <div class="check-item" onclick="toggle('${item.id}')">
+            <input type="checkbox" ${s.checked?'checked':''} onclick="toggle('${item.id}');event.stopPropagation()">
+            <span class="check-text ${s.checked?'done':''}">${item.text}</span>
+          </div>
+          <input class="note-input" type="text" placeholder="Notes (optional)..."
+            value="${s.note.replace(/"/g,'&quot;')}"
+            oninput="setNote('${item.id}',this.value)"
+            onclick="event.stopPropagation()">
+        `;
+      }).join("")}
+    </div>
+  `).join("");
+  updateProgress();
+}
+
+function updateProgress() {
+  const t = getTotals(currentCarrier);
+  const pct = t.total ? Math.round(t.done / t.total * 100) : 0;
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("carrierMeta").textContent = `${t.done} / ${t.total}`;
+  document.getElementById("carrierTitle").textContent = currentCarrier;
+  const g = getTotalAll();
+  document.getElementById("globalProgress").innerHTML = `<strong>${g.done}</strong> / ${g.total} completed`;
+}
+
+function toggle(itemId) {
+  state[currentCarrier][itemId].checked = !state[currentCarrier][itemId].checked;
+  renderChecklist();
+  renderSidebar();
+}
+
+function setNote(itemId, val) {
+  state[currentCarrier][itemId].note = val;
+}
+
+function setCarrier(c) {
+  currentCarrier = c;
+  renderSidebar();
+  renderChecklist();
+}
+
+function resetCurrent() {
+  sections.forEach(s => s.items.forEach(i => {
+    state[currentCarrier][i.id] = { checked: false, note: "" };
+  }));
+  renderChecklist();
+  renderSidebar();
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => { t.className = "toast"; }, 3500);
+}
+
+async function submitResults() {
+  const tester = document.getElementById("testerName").value.trim();
+  if (!tester) { showToast("Please enter your name before submitting.", "error"); return; }
+  const t = getTotals(currentCarrier);
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "Sending...";
+
+  const items = {};
+  sections.forEach(s => s.items.forEach(i => {
+    items[i.id] = { text: i.text, checked: state[currentCarrier][i.id].checked, note: state[currentCarrier][i.id].note };
+  }));
+
+  const payload = {
+    carrier: currentCarrier,
+    tester: tester,
+    total_done: t.done,
+    total_items: t.total,
+    items: items
+  };
+
+  try {
+    await fetch(SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    showToast(`✓ ${currentCarrier} results submitted successfully`, "success");
+  } catch (err) {
+    showToast("Error sending data. Check your connection.", "error");
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Submit to Google Sheets";
+}
+
+renderSidebar();
+renderChecklist();
+</script>
+</body>
+</html>
