@@ -248,6 +248,16 @@
   }
   .note-input:focus { border-color: var(--accent); color: var(--text); }
   .note-input::placeholder { color: var(--border); }
+  .instruction {
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--surface2);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 7px 10px;
+    margin: 2px 0 6px 37px;
+    line-height: 1.6;
+  }
 
   /* ACTIONS */
   .actions {
@@ -359,47 +369,47 @@ const sections = [
   {
     title: "1. Initial setup",
     items: [
-      { id:"c1", text:"Carrier appears correctly in the list of available operators" },
-      { id:"c2", text:"USSD codes generated are correct for this carrier" },
-      { id:"c3", text:"Executing the USSD code on the dialer, the carrier confirms call forwarding is active" },
-      { id:"c4", text:"App reflects 'forwarding active' status after setup" },
+      { id:"c1", text:"Carrier appears correctly in the list of available operators", instruction:"Open the app settings and look for your carrier in the list. If you don't see it, check if there are variations of your carrier name (e.g. T-Mobile vs Metro by T-Mobile)." },
+      { id:"c2", text:"USSD codes generated are correct for this carrier", instruction:"The app will generate USSD codes for your carrier. Copy each code and run it manually in your phone dialer. You should see a confirmation message from your carrier." },
+      { id:"c3", text:"Executing the USSD code on the dialer, the carrier confirms call forwarding is active", instruction:"After running the USSD code, your carrier should display a confirmation screen. Take note of the 6 codes shown and verify each one was set up correctly." },
+      { id:"c4", text:"App reflects 'forwarding active' status after setup", instruction:"Check the app home screen — it should show a green indicator or 'Forwarding Active' status. This may appear as an iOS alert or Android success message." },
     ]
-  },  
+  },
   {
     title: "2. Call forwarding — debt collection numbers",
     items: [
-      { id:"d1", text:"A call from a registered and verified number is redirected to the call center" },
-      { id:"d2", text:"The call center receives the call correctly (no drops or audio issues)" },
-      { id:"d3", text:"App logs the forwarding event with timestamp and origin number" },
-      { id:"d4", text:"Forwarding works when the phone is busy (call in progress)" },
-      { id:"d5", text:"Forwarding works when the phone is off or has no signal" },
+      { id:"d1", text:"A call from a registered and verified number is redirected to the call center", instruction:"Ask a friend to call you from a number you previously added and blocked in the app. Let the phone ring for at least 15 seconds without answering. The call should be redirected to the call center." },
+      { id:"d2", text:"The call center receives the call correctly (no drops or audio issues)", instruction:"Confirm with the call center agent that they received the call from your friend's number. The call should arrive with the correct caller ID and no audio issues." },
+      { id:"d3", text:"App logs the forwarding event with timestamp and origin number", instruction:"Go to the call history or logs section in the app. You should see the forwarded call listed with its timestamp and origin number." },
+      { id:"d4", text:"Forwarding works when the phone is busy (call in progress)", instruction:"While on an active call, ask your friend to call you from the registered number. Wait 15 seconds — the call should be forwarded to the call center automatically." },
+      { id:"d5", text:"Forwarding works when the phone is off or has no signal", instruction:"Turn off your phone or switch to airplane mode. Ask your friend to call you from the registered number and wait 20 seconds. Turn your phone back on and verify the call was forwarded." },
     ]
   },
   {
     title: "3. No forwarding — normal calls",
     items: [
-      { id:"n1", text:"A call from an unregistered number reaches the user directly (no forwarding)" },
-      { id:"n2", text:"Calls from contacts in the phonebook are not forwarded" },
-      { id:"n3", text:"Unknown numbers (not in the debt collection list) are not forwarded" },
-      { id:"n4", text:"App does not generate forwarding events for normal calls" },
+      { id:"n1", text:"A call from an unregistered number reaches the user directly (no forwarding)", instruction:"Ask someone to call you from a number that is NOT in the app's blocked list (not a contact either). The call should ring normally on your phone, not be forwarded." },
+      { id:"n2", text:"Calls from contacts in the phonebook are not forwarded", instruction:"Ask a contact from your phonebook to call you. The call should come through normally. Test with 2-3 different contacts to confirm." },
+      { id:"n3", text:"Unknown numbers (not in the debt collection list) are not forwarded", instruction:"Have someone call you from an unknown number not in the app. It should ring normally on your phone. Note: this is different from debt collection numbers — verify the behavior is as expected." },
+      { id:"n4", text:"App does not generate forwarding events for normal calls", instruction:"After the tests above, check the app logs. Normal calls should NOT appear as forwarding events in the history." },
     ]
   },
   {
     title: "4. Voicemail storage",
     items: [
-      { id:"v1", text:"If a debt collection number leaves a voicemail, it is stored in the app" },
-      { id:"v2", text:"Voicemail is playable from the app without errors" },
-      { id:"v3", text:"Origin number and duration are shown for each voicemail" },
-      { id:"v4", text:"Multiple voicemails from the same number are stored correctly" },
+      { id:"v1", text:"If a debt collection number leaves a voicemail, it is stored in the app", instruction:"Ask your friend (using the registered number) to call you and leave a voicemail. Do not answer the call. After 30 seconds, check the app — the voicemail should appear in the voicemail section." },
+      { id:"v2", text:"Voicemail is playable from the app without errors", instruction:"Tap on the voicemail in the app and press play. It should play without errors or interruptions." },
+      { id:"v3", text:"Origin number and duration are shown for each voicemail", instruction:"Verify that the voicemail entry shows the caller's number and the duration of the message." },
+      { id:"v4", text:"Multiple voicemails from the same number are stored correctly", instruction:"Repeat the voicemail test 2-3 times from the same number. All messages should be stored and listed individually in the app." },
     ]
   },
   {
     title: "5. Carrier-side validation",
     items: [
-      { id:"o1", text:"Confirmed with carrier (support or portal) that conditional forwarding is active" },
-      { id:"o2", text:"USSD deactivation code cancels forwarding correctly" },
-      { id:"o3", text:"Carrier does not charge unexpected extra minutes for forwarded calls" },
-      { id:"o4", text:"Re-activating forwarding after deactivation works without issues" },
+      { id:"o1", text:"Confirmed with carrier (support or portal) that conditional forwarding is active", instruction:"Dial the USSD verification code for your carrier (e.g. *#21# for most carriers) in your phone dialer. Your carrier should display the forwarding status and the number it is forwarding to." },
+      { id:"o2", text:"USSD deactivation code cancels forwarding correctly", instruction:"Run the USSD deactivation code provided by the app. Your carrier should confirm forwarding has been disabled. Verify again with *#21#." },
+      { id:"o3", text:"Carrier does not charge unexpected extra minutes for forwarded calls", instruction:"Check your carrier account or bill to confirm no unexpected charges were added for the forwarded calls. Contact carrier support if unsure." },
+      { id:"o4", text:"Re-activating forwarding after deactivation works without issues", instruction:"Run the USSD setup codes again to re-enable forwarding. Verify the app shows 'Forwarding Active' and run a quick call test with your friend. Once confirmed, you are all set — thank you for testing!" },
     ]
   }
 ];
@@ -448,6 +458,7 @@ function renderChecklist() {
             <input type="checkbox" ${s.checked?'checked':''} onclick="toggle('${item.id}');event.stopPropagation()">
             <span class="check-text ${s.checked?'done':''}">${item.text}</span>
           </div>
+          <div class="instruction">📋 ${item.instruction}</div>
           <input class="note-input" type="text" placeholder="Notes (optional)..."
             value="${s.note.replace(/"/g,'&quot;')}"
             oninput="setNote('${item.id}',this.value)"
