@@ -16,6 +16,7 @@
     --green: #22c55e;
     --green-dim: rgba(34,197,94,0.1);
     --yellow: #eab308;
+    --yellow-dim: rgba(234,179,8,0.12);
     --red: #ef4444;
     --text: #e2e8f0;
     --muted: #64748b;
@@ -58,6 +59,62 @@
     color: var(--muted);
   }
   .header-progress strong { color: var(--text); }
+
+  /* HEADER RIGHT */
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* SAVE INDICATOR */
+  .save-indicator {
+    font-family: var(--mono);
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .save-indicator.visible { opacity: 1; }
+  .save-indicator.saving { color: var(--yellow); }
+  .save-indicator.saved { color: var(--green); }
+  .save-indicator.error { color: var(--red); }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .save-indicator.saving .save-dot { animation: pulse 0.8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* DRAFT BANNER */
+  .draft-banner {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 10px 14px;
+    background: var(--yellow-dim);
+    border: 1px solid rgba(234,179,8,0.3);
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--yellow);
+  }
+  .draft-banner.visible { display: flex; }
+  .draft-banner-text { display: flex; align-items: center; gap: 8px; }
+  .draft-discard {
+    background: none;
+    border: 1px solid rgba(234,179,8,0.4);
+    color: var(--yellow);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .draft-discard:hover { background: rgba(234,179,8,0.15); }
 
   /* LAYOUT */
   .layout {
@@ -118,9 +175,43 @@
     background: var(--green-dim);
     color: var(--green);
   }
+  .carrier-btn.has-draft .carrier-badge {
+    background: var(--yellow-dim);
+    color: var(--yellow);
+  }
 
   /* MAIN */
   main { padding: 32px 40px; max-width: 760px; }
+
+  /* ABOUT BLOCK */
+  .about-block {
+    margin-bottom: 28px;
+    padding: 20px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .about-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .about-subtitle {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .about-body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .about-body p + p { margin-top: 10px; }
 
   /* TESTER INPUT */
   .tester-row {
@@ -348,7 +439,13 @@
 
 <header>
   <div class="logo">CreditorX <span>/</span> Carrier Testing</div>
-  <div class="header-progress" id="globalProgress">0 / 0 completed</div>
+  <div class="header-right">
+    <div class="save-indicator" id="saveIndicator">
+      <div class="save-dot"></div>
+      <span id="saveIndicatorText">Saving...</span>
+    </div>
+    <div class="header-progress" id="globalProgress">0 / 0 completed</div>
+  </div>
 </header>
 
 <div class="layout">
@@ -358,9 +455,34 @@
   </aside>
 
   <main>
+    <div class="about-block">
+      <div class="about-title">About this testing program</div>
+      <div class="about-subtitle">Help us validate CreditorX across every US carrier</div>
+      <div class="about-body">
+        <p>CreditorX relies on USSD commands to enable conditional call forwarding — redirecting calls from specific numbers (typically debt collectors) to a call center, while letting your regular calls come through normally. Because every US carrier implements USSD and call forwarding a little differently, real-world behavior can vary significantly from one network to another.</p>
+        <p>The purpose of this checklist is to gather firsthand testing perspectives from users across every major US carrier. By documenting what works, what doesn't, and any quirks you encounter, you help us confirm that CreditorX behaves reliably for every customer, regardless of which carrier they use.</p>
+        <p>To get started, select your carrier from the sidebar, enter your name below, and work through each test item in order. Check off the steps that perform as expected, and use the notes field to capture anything unusual. When you're done, submit your results. Thank you for your time and attention to detail.</p>
+        <p>Each test item includes a short instruction explaining exactly what to do and what to look for. For some items, you'll also find a <strong style="color:var(--text)">▶ View screenshot</strong> link just below the instruction — tap it to expand a reference image showing what the expected result looks like on screen.</p>
+      </div>
+    </div>
+
     <div class="tester-row">
       <label>Tester</label>
-      <input type="text" id="testerName" placeholder="Enter your name..." />
+      <input type="text" id="testerName" placeholder="Enter your name..." autocomplete="off" />
+    </div>
+
+    <div class="about-block" style="margin-bottom:20px; padding: 14px 18px;">
+      <div class="about-body" style="font-size:12px;">
+        <p>Your progress is <strong style="color:var(--text)">saved automatically</strong> as you go — you'll see a brief <strong style="color:var(--green)">Saved</strong> confirmation in the top right after each action. If you need to stop and come back later, simply close the page. Next time you open it, enter the same name and select the same carrier — your answers will be restored automatically and a <strong style="color:var(--yellow)">yellow banner</strong> will confirm that a previous draft was loaded. Once you're satisfied with your answers, click <strong style="color:var(--text)">Submit to Google Sheets</strong> to finalize. Submitted results are marked as complete and will not be overwritten.</p>
+      </div>
+    </div>
+
+    <div class="draft-banner" id="draftBanner">
+      <div class="draft-banner-text">
+        <span>◆</span>
+        <span>Draft loaded — continue where you left off</span>
+      </div>
+      <button class="draft-discard" onclick="discardDraft()">Discard draft</button>
     </div>
 
     <div class="carrier-header">
@@ -461,6 +583,9 @@ carriers.forEach(c => {
   }));
 });
 
+// Track draft status per carrier+tester
+const draftStatus = {};
+
 function getTotals(carrier) {
   const all = Object.values(state[carrier]);
   return { done: all.filter(x => x.checked).length, total: all.length };
@@ -472,18 +597,118 @@ function getTotalAll() {
   return { done, total };
 }
 
+// ── Auto-save debounce ──────────────────────────────────────────────
+let saveTimer = null;
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  showSaveIndicator("saving");
+  saveTimer = setTimeout(() => saveDraft(), 1200);
+}
+
+async function saveDraft() {
+  const tester = document.getElementById("testerName").value.trim();
+  if (!tester) { hideSaveIndicator(); return; }
+  const t = getTotals(currentCarrier);
+  const payload = {
+    carrier: currentCarrier,
+    tester,
+    status: "draft",
+    total_done: t.done,
+    total_items: t.total,
+    items: buildItems()
+  };
+  try {
+    await fetch(SHEET_URL, {
+      method: "POST", mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    showSaveIndicator("saved");
+    setTimeout(hideSaveIndicator, 2500);
+    draftStatus[`${currentCarrier}|${tester}`] = "draft";
+    renderSidebar();
+  } catch {
+    showSaveIndicator("error");
+    setTimeout(hideSaveIndicator, 3000);
+  }
+}
+
+// ── Load draft ──────────────────────────────────────────────────────
+let loadDraftTimer = null;
+function onTesterNameChange() {
+  clearTimeout(loadDraftTimer);
+  loadDraftTimer = setTimeout(tryLoadDraft, 800);
+}
+
+async function tryLoadDraft() {
+  const tester = document.getElementById("testerName").value.trim();
+  if (!tester) return;
+  await loadDraftForCarrier(currentCarrier, tester);
+}
+
+async function loadDraftForCarrier(carrier, tester) {
+  if (!tester) return;
+  const key = `${carrier}|${tester}`;
+  try {
+    const res = await fetch(`${SHEET_URL}?carrier=${encodeURIComponent(carrier)}&tester=${encodeURIComponent(tester)}`);
+    const data = await res.json();
+    if (data.found && data.items) {
+      Object.keys(data.items).forEach(id => {
+        if (state[carrier][id] !== undefined) {
+          state[carrier][id] = { checked: data.items[id].checked, note: data.items[id].note || "" };
+        }
+      });
+      draftStatus[key] = "draft";
+      showDraftBanner();
+      renderChecklist();
+      renderSidebar();
+    } else if (data.completed) {
+      draftStatus[key] = "completed";
+      hideDraftBanner();
+    } else {
+      draftStatus[key] = null;
+      hideDraftBanner();
+    }
+  } catch {
+    hideDraftBanner();
+  }
+}
+
+function discardDraft() {
+  const tester = document.getElementById("testerName").value.trim();
+  sections.forEach(s => s.items.forEach(i => {
+    state[currentCarrier][i.id] = { checked: false, note: "" };
+  }));
+  draftStatus[`${currentCarrier}|${tester}`] = null;
+  hideDraftBanner();
+  renderChecklist();
+  renderSidebar();
+  showToast("Draft discarded", "info");
+}
+
+// ── Sidebar ─────────────────────────────────────────────────────────
 function renderSidebar() {
+  const tester = document.getElementById("testerName").value.trim();
   const list = document.getElementById("carrierList");
   list.innerHTML = carriers.map(c => {
     const t = getTotals(c);
-    const done = t.done === t.total;
-    return `<button class="carrier-btn ${c===currentCarrier?'active':''} ${done?'done':''}" onclick="setCarrier('${c.replace(/'/g,"\\'")}')">
+    const isCompleted = t.done === t.total;
+    const key = `${c}|${tester}`;
+    const hasDraft = draftStatus[key] === "draft" && !isCompleted;
+    return `<button class="carrier-btn ${c===currentCarrier?'active':''} ${isCompleted?'done':''} ${hasDraft?'has-draft':''}"
+      data-carrier="${c.replace(/"/g,'&quot;')}"
+      onclick="handleCarrierClick(this)">
       ${c}
       <span class="carrier-badge">${t.done}/${t.total}</span>
     </button>`;
   }).join("");
 }
 
+function handleCarrierClick(btn) {
+  setCarrier(btn.dataset.carrier);
+}
+
+// ── Checklist ────────────────────────────────────────────────────────
 function renderChecklist() {
   const body = document.getElementById("checklistBody");
   body.innerHTML = sections.map(sec => `
@@ -538,24 +763,44 @@ function toggle(itemId) {
   state[currentCarrier][itemId].checked = !state[currentCarrier][itemId].checked;
   renderChecklist();
   renderSidebar();
+  scheduleSave();
 }
 
 function setNote(itemId, val) {
   state[currentCarrier][itemId].note = val;
+  scheduleSave();
 }
 
-function setCarrier(c) {
+async function setCarrier(c) {
   currentCarrier = c;
+  const tester = document.getElementById("testerName").value.trim();
+  const key = `${c}|${tester}`;
+  if (tester && draftStatus[key] === undefined) {
+    await loadDraftForCarrier(c, tester);
+  } else {
+    if (draftStatus[key] === "draft") showDraftBanner(); else hideDraftBanner();
+  }
   renderSidebar();
   renderChecklist();
 }
 
 function resetCurrent() {
+  const tester = document.getElementById("testerName").value.trim();
   sections.forEach(s => s.items.forEach(i => {
     state[currentCarrier][i.id] = { checked: false, note: "" };
   }));
+  draftStatus[`${currentCarrier}|${tester}`] = null;
+  hideDraftBanner();
   renderChecklist();
   renderSidebar();
+}
+
+function buildItems() {
+  const items = {};
+  sections.forEach(s => s.items.forEach(i => {
+    items[i.id] = { text: i.text, checked: state[currentCarrier][i.id].checked, note: state[currentCarrier][i.id].note };
+  }));
+  return items;
 }
 
 function showToast(msg, type) {
@@ -565,6 +810,18 @@ function showToast(msg, type) {
   setTimeout(() => { t.className = "toast"; }, 3500);
 }
 
+// ── UI helpers ───────────────────────────────────────────────────────
+function showDraftBanner() { document.getElementById("draftBanner").classList.add("visible"); }
+function hideDraftBanner() { document.getElementById("draftBanner").classList.remove("visible"); }
+function showSaveIndicator(st) {
+  const el = document.getElementById("saveIndicator");
+  const txt = document.getElementById("saveIndicatorText");
+  el.className = `save-indicator visible ${st}`;
+  txt.textContent = st === "saving" ? "Saving..." : st === "saved" ? "Saved" : "Save failed";
+}
+function hideSaveIndicator() { document.getElementById("saveIndicator").classList.remove("visible"); }
+
+// ── Submit (completed) ───────────────────────────────────────────────
 async function submitResults() {
   const tester = document.getElementById("testerName").value.trim();
   if (!tester) { showToast("Please enter your name before submitting.", "error"); return; }
@@ -573,27 +830,25 @@ async function submitResults() {
   btn.disabled = true;
   btn.textContent = "Sending...";
 
-  const items = {};
-  sections.forEach(s => s.items.forEach(i => {
-    items[i.id] = { text: i.text, checked: state[currentCarrier][i.id].checked, note: state[currentCarrier][i.id].note };
-  }));
-
   const payload = {
     carrier: currentCarrier,
-    tester: tester,
+    tester,
+    status: "completed",
     total_done: t.done,
     total_items: t.total,
-    items: items
+    items: buildItems()
   };
 
   try {
     await fetch(SHEET_URL, {
-      method: "POST",
-      mode: "no-cors",
+      method: "POST", mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
     showToast(`✓ ${currentCarrier} results submitted successfully`, "success");
+    draftStatus[`${currentCarrier}|${tester}`] = "completed";
+    hideDraftBanner();
+    renderSidebar();
   } catch (err) {
     showToast("Error sending data. Check your connection.", "error");
   }
@@ -601,6 +856,12 @@ async function submitResults() {
   btn.disabled = false;
   btn.textContent = "Submit to Google Sheets";
 }
+
+// ── Init ─────────────────────────────────────────────────────────────
+document.getElementById("testerName").addEventListener("input", () => {
+  renderSidebar();
+  onTesterNameChange();
+});
 
 renderSidebar();
 renderChecklist();
